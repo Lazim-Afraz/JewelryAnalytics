@@ -518,7 +518,7 @@ def render_sidebar() -> str:
                             svc._df           = csv_df
                             svc._analyzer     = PerformanceAnalyzer(csv_df)
                             svc._metrics_df   = svc._analyzer.calculate_all_metrics()
-                            svc._branch_summary = svc._analyzer.aggregate_by_branch()
+                            svc._branch_sum = svc._analyzer.aggregate_by_branch()
                             svc._heroes_df    = svc._analyzer.identify_local_heroes()
                             svc._attr_data    = svc._analyzer.aggregate_by_attribute()
 
@@ -1325,100 +1325,151 @@ def render_chat_widget():
     </style>
     """, unsafe_allow_html=True)
 
-    # ── Draggable floating chat button (pure HTML/JS, no Streamlit button) ──────
-    chat_open = st.session_state["chat_open"]
-    icon      = "✕" if chat_open else "💬"
+    # ── FAB injected into parent window via components.html (height=0) ──────────
+    # No Streamlit buttons at all — zero layout bleed
+    import json as _json
+    import streamlit.components.v1 as _components
 
-    st.markdown(f"""
-    <style>
-      #chat-fab {{
-          position: fixed;
-          bottom: 32px;
-          right: 32px;
-          width: 54px;
-          height: 54px;
-          background: linear-gradient(135deg, {GOLD} 0%, {GOLD_LIGHT} 100%);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.5rem;
-          cursor: grab;
-          z-index: 999998;
-          box-shadow: 0 4px 20px rgba(201,168,76,0.5);
-          user-select: none;
-          transition: box-shadow 0.2s;
-      }}
-      #chat-fab:active {{ cursor: grabbing; }}
-      #chat-fab:hover  {{ box-shadow: 0 6px 28px rgba(201,168,76,0.8); }}
-    </style>
+    history_json = _json.dumps(st.session_state["chat_history"])
 
-    <div id="chat-fab" title="AI Assistant">{icon}</div>
+    try:
+        sys_prompt = assistant._build_system_prompt()
+    except Exception:
+        sys_prompt = "You are a helpful jewelry portfolio analytics assistant."
+    sys_prompt_js = sys_prompt.replace("\\", "\\\\").replace("`", "\\`")
 
-    <script>
-    (function() {{
-      var fab = document.getElementById('chat-fab');
-      if (!fab) return;
+    _components.html(f"""<!DOCTYPE html><html><head>
+<style>*{{margin:0;padding:0;box-sizing:border-box;}}body{{background:transparent;overflow:hidden;}}</style>
+</head><body><script>
+(function(){{
+  var W=window.parent,D=W.document;
+  ['_jw','_jwstyle'].forEach(function(id){{var e=D.getElementById(id);if(e)e.remove();}});
 
-      var isDragging = false;
-      var startX, startY, origLeft, origTop;
+  var s=D.createElement('style');s.id='_jwstyle';
+  s.textContent='@keyframes jwIn{{from{{opacity:0;transform:translateY(10px)}}to{{opacity:1;transform:translateY(0)}}}}'
+    +'#_jwmsgs::-webkit-scrollbar{{width:4px}}'
+    +'#_jwmsgs::-webkit-scrollbar-thumb{{background:#2A2A3E;border-radius:4px}}'
+    +'#_jwinp:focus{{outline:none;border-color:#C9A84C!important}}'
+    +'#_jwinp::placeholder{{color:#8A8AAA}}'
+    +'.jwdot{{width:6px;height:6px;border-radius:50%;background:#C9A84C;display:inline-block;animation:jwb 1.2s infinite}}'
+    +'.jwdot:nth-child(2){{animation-delay:.2s}}.jwdot:nth-child(3){{animation-delay:.4s}}'
+    +'@keyframes jwb{{0%,80%,100%{{opacity:.2}}40%{{opacity:1}}}}';
+  D.head.appendChild(s);
 
-      fab.addEventListener('mousedown', function(e) {{
-        isDragging = false;
-        var rect = fab.getBoundingClientRect();
-        startX  = e.clientX;
-        startY  = e.clientY;
-        origLeft = rect.left;
-        origTop  = rect.top;
-        fab.style.right  = 'auto';
-        fab.style.bottom = 'auto';
-        fab.style.left   = origLeft + 'px';
-        fab.style.top    = origTop  + 'px';
+  var G='#C9A84C',GL='#E8C96A',DK='#0D0D14',CB='#13131F',BD='#2A2A3E',TX='#F0E6CC',MT='#8A8AAA';
 
-        function onMove(e) {{
-          var dx = e.clientX - startX;
-          var dy = e.clientY - startY;
-          if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
-          fab.style.left = (origLeft + dx) + 'px';
-          fab.style.top  = (origTop  + dy) + 'px';
-        }}
+  var root=D.createElement('div');root.id='_jw';
+  root.style.cssText='position:fixed;bottom:28px;right:28px;z-index:2147483647;display:flex;flex-direction:column;align-items:flex-end;gap:12px;';
 
-        function onUp(e) {{
-          document.removeEventListener('mousemove', onMove);
-          document.removeEventListener('mouseup', onUp);
-          if (!isDragging) {{
-            // Single click — find & click the hidden streamlit toggle button
-            var btns = window.parent.document.querySelectorAll('button');
-            for (var i = 0; i < btns.length; i++) {{
-              if (btns[i].innerText.trim() === 'CHATTOGGLE') {{
-                btns[i].click();
-                break;
-              }}
-            }}
-          }}
-        }}
+  var panel=D.createElement('div');
+  panel.style.cssText='width:360px;background:'+CB+';border:1.5px solid '+G+';border-radius:16px;box-shadow:0 12px 48px rgba(0,0,0,0.8);display:none;flex-direction:column;overflow:hidden;animation:jwIn .2s ease;';
 
-        document.addEventListener('mousemove', onMove);
-        document.addEventListener('mouseup', onUp);
-        e.preventDefault();
-      }});
-    }})();
-    </script>
-    """, unsafe_allow_html=True)
+  var hdr=D.createElement('div');
+  hdr.style.cssText='background:linear-gradient(135deg,#1A1A2E,#16213E);padding:13px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid '+BD+';flex-shrink:0;';
+  hdr.innerHTML='<span style="font-size:1.05rem">💎</span>'
+    +'<div style="flex:1"><div style="color:'+G+';font-weight:700;font-size:.9rem;font-family:Georgia,serif;letter-spacing:.04em">Analytics Assistant</div>'
+    +'<div style="color:'+MT+';font-size:.63rem;margin-top:1px">Powered by Mistral · Local AI</div></div>'
+    +'<button id="_jwX" style="background:rgba(255,255,255,.07);border:1px solid '+BD+';color:'+MT+';width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;">✕</button>';
 
-    # Invisible toggle button triggered by JS click
-    st.markdown("<style>.chat-toggle-btn{display:none!important;}</style>",
-                unsafe_allow_html=True)
-    with st.container():
-        if st.button("CHATTOGGLE", key="chat_fab_btn"):
-            st.session_state["chat_open"] = not st.session_state["chat_open"]
-            st.rerun()
-    st.markdown("""
-    <style>
-      div[data-testid="stButton"]:has(button:contains("CHATTOGGLE")) {display:none!important;}
-      button:has(> div > p:contains("CHATTOGGLE")) {display:none!important;}
-    </style>
-    """, unsafe_allow_html=True)
+  var msgs=D.createElement('div');msgs.id='_jwmsgs';
+  msgs.style.cssText='flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px;min-height:140px;max-height:300px;';
+
+  var irow=D.createElement('div');
+  irow.style.cssText='padding:10px 12px;border-top:1px solid '+BD+';background:'+DK+';display:flex;gap:8px;align-items:center;flex-shrink:0;';
+
+  var inp=D.createElement('input');inp.id='_jwinp';inp.type='text';
+  inp.placeholder='Ask about branches, sales, clusters…';
+  inp.style.cssText='flex:1;background:#1A1A2E;border:1px solid '+BD+';border-radius:10px;color:'+TX+';padding:8px 12px;font-size:.82rem;font-family:Segoe UI,sans-serif;';
+
+  var sendBtn=D.createElement('button');sendBtn.innerHTML='&#10148;';sendBtn.title='Send';
+  sendBtn.style.cssText='background:linear-gradient(135deg,'+G+','+GL+');border:none;border-radius:10px;width:36px;height:36px;cursor:pointer;color:'+DK+';font-size:1rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s;';
+  sendBtn.onmouseenter=function(){{sendBtn.style.transform='scale(1.1)';}};
+  sendBtn.onmouseleave=function(){{sendBtn.style.transform='scale(1)';}};
+
+  var clrBtn=D.createElement('button');clrBtn.textContent='🗑';clrBtn.title='Clear';
+  clrBtn.style.cssText='background:#1A1A2E;border:1px solid '+BD+';border-radius:10px;width:32px;height:36px;cursor:pointer;font-size:.82rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;';
+
+  irow.appendChild(inp);irow.appendChild(sendBtn);irow.appendChild(clrBtn);
+  panel.appendChild(hdr);panel.appendChild(msgs);panel.appendChild(irow);
+
+  var fab=D.createElement('button');fab.title='AI Assistant';fab.innerHTML='💬';
+  fab.style.cssText='width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,'+G+','+GL+');border:none;cursor:pointer;font-size:1.5rem;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(201,168,76,.55);transition:transform .15s,box-shadow .15s;flex-shrink:0;';
+  fab.onmouseenter=function(){{fab.style.transform='scale(1.08)';fab.style.boxShadow='0 6px 32px rgba(201,168,76,.75)';}};
+  fab.onmouseleave=function(){{fab.style.transform='scale(1)';fab.style.boxShadow='0 4px 24px rgba(201,168,76,.55)';}};
+
+  root.appendChild(panel);root.appendChild(fab);D.body.appendChild(root);
+
+  var history={history_json};
+  function addMsg(role,text){{
+    var d=D.createElement('div');
+    if(role==='user'){{d.style.cssText='background:linear-gradient(135deg,'+G+','+GL+');color:'+DK+';border-radius:14px 14px 2px 14px;padding:9px 13px;font-size:.82rem;font-weight:600;max-width:82%;word-break:break-word;margin-left:auto;';}}
+    else{{d.style.cssText='background:#1A1A2E;border:1px solid '+BD+';color:'+TX+';border-radius:14px 14px 14px 2px;padding:9px 13px;font-size:.82rem;line-height:1.55;max-width:90%;word-break:break-word;white-space:pre-wrap;';}}
+    d.textContent=text;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;
+  }}
+
+  function renderHistory(){{
+    msgs.innerHTML='';
+    if(!history.length){{
+      var tip=D.createElement('div');
+      tip.style.cssText='color:'+MT+';font-size:.79rem;text-align:center;padding:20px 8px;line-height:1.8;';
+      tip.innerHTML='💎<br><b style="color:'+G+'">Analytics Assistant</b><br><span style="font-size:.74rem">Ask about branch performance,<br>predictions, clusters or recommendations.</span>';
+      msgs.appendChild(tip);
+    }}else{{history.forEach(function(m){{addMsg(m.role,m.content);}});}}
+  }}
+  renderHistory();
+
+  var isOpen=false;
+  function openPanel(){{isOpen=true;panel.style.display='flex';fab.innerHTML='✕';fab.style.fontSize='1.2rem';setTimeout(function(){{inp.focus();}},80);msgs.scrollTop=msgs.scrollHeight;}}
+  function closePanel(){{isOpen=false;panel.style.display='none';fab.innerHTML='💬';fab.style.fontSize='1.5rem';}}
+  fab.onclick=function(){{isOpen?closePanel():openPanel();}};
+  D.getElementById('_jwX').onclick=closePanel;
+
+  var OLLAMA='http://localhost:11434';
+  var SYS=`{sys_prompt_js}`;
+  var busy=false;
+
+  function sendMsg(){{
+    var txt=inp.value.trim();if(!txt||busy)return;
+    busy=true;inp.value='';inp.disabled=true;sendBtn.style.opacity='.5';
+    history.push({{role:'user',content:txt}});addMsg('user',txt);
+
+    var th=D.createElement('div');th.style.cssText='padding:4px 2px;display:flex;gap:4px;align-items:center;';
+    th.innerHTML='<span class="jwdot"></span><span class="jwdot"></span><span class="jwdot"></span><span style="color:'+MT+';font-size:.74rem;margin-left:4px;">Thinking…</span>';
+    msgs.appendChild(th);msgs.scrollTop=msgs.scrollHeight;
+
+    var ollamaMsgs=[{{role:'system',content:SYS}}];
+    history.slice(0,-1).forEach(function(m){{ollamaMsgs.push(m);}});
+    ollamaMsgs.push({{role:'user',content:txt}});
+
+    var replyEl=null,fullReply='';
+    fetch(OLLAMA+'/api/chat',{{method:'POST',headers:{{'Content-Type':'application/json'}},
+      body:JSON.stringify({{model:'mistral',messages:ollamaMsgs,stream:true,options:{{temperature:.3,num_ctx:2048}}}})
+    }}).then(function(r){{
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      var reader=r.body.getReader(),dec=new TextDecoder();
+      function read(){{
+        reader.read().then(function(res){{
+          if(res.done){{history.push({{role:'assistant',content:fullReply}});busy=false;inp.disabled=false;sendBtn.style.opacity='1';inp.focus();return;}}
+          dec.decode(res.value,{{stream:true}}).split('\n').forEach(function(line){{
+            if(!line.trim())return;
+            try{{var c=JSON.parse(line),tok=(c.message||{{}}).content||'';
+              if(tok){{if(!replyEl){{if(th.parentNode)th.parentNode.removeChild(th);replyEl=addMsg('assistant','');}}fullReply+=tok;replyEl.textContent=fullReply;msgs.scrollTop=msgs.scrollHeight;}}
+            }}catch(e){{}}
+          }});read();
+        }});
+      }}read();
+    }}).catch(function(){{
+      if(th.parentNode)th.parentNode.removeChild(th);
+      addMsg('assistant','⚠️ Could not reach Ollama. Make sure it is running.');
+      busy=false;inp.disabled=false;sendBtn.style.opacity='1';
+    }});
+  }}
+
+  sendBtn.onclick=sendMsg;
+  inp.addEventListener('keydown',function(e){{if(e.key==='Enter'){{e.preventDefault();sendMsg();}}}});
+  clrBtn.onclick=function(){{history=[];renderHistory();}};
+}})();
+</script></body></html>""", height=0, scrolling=False)
 
     # ── Chat panel ────────────────────────────────────────────────────────────
     if st.session_state["chat_open"]:
