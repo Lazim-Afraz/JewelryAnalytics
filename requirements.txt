@@ -1,35 +1,31 @@
-# Database Connection (SQL Server)
-pyodbc==5.0.1
+# ══════════════════════════════════════════════════════════════════════════════
+# Jewelry Portfolio Analytics — Requirements
+# ══════════════════════════════════════════════════════════════════════════════
+# Install all:  pip install -r requirements.txt
 
-# Data Processing
-pandas==2.1.4
-numpy==1.24.3
+# ── Web dashboard ──────────────────────────────────────────────────────────────
+streamlit>=1.32.0
 
-# Machine Learning (Your Jupyter Logic)
-scikit-learn==1.3.2
-joblib==1.3.2
-scipy==1.11.4
+# ── Data & analytics ──────────────────────────────────────────────────────────
+pandas>=2.0.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
 
-# Visualization (Your Plots)
-matplotlib==3.8.2
-seaborn==0.13.0
-plotly==5.18.0
-kaleido==0.2.1
+# ── Visualisation ─────────────────────────────────────────────────────────────
+plotly>=5.18.0
 
-# Desktop GUI (Interactive Interface)
-PySide6==6.6.1
-PySide6-Addons==6.6.1
-PySide6-Essentials==6.6.1
+# ── Database ──────────────────────────────────────────────────────────────────
+pyodbc>=4.0.39
 
-# Report Generation (Excel/PDF Export)
-openpyxl==3.1.2
-xlsxwriter==3.1.9
-reportlab==4.0.7
-Pillow==10.1.0
+# ── Excel export ──────────────────────────────────────────────────────────────
+openpyxl>=3.1.0
 
-# Utilities
-tqdm==4.66.1
-python-dotenv==1.0.0
+# ── PDF export ────────────────────────────────────────────────────────────────
+reportlab>=4.0.0
 
-# Optional - Performance
-numba==0.58.1
+# ── Gold price feed ───────────────────────────────────────────────────────────
+yfinance>=0.2.36
+
+# ── Chatbot (Ollama runs locally — no Python package needed) ──────────────────
+# Install Ollama from: https://ollama.com/download
+# Then run: ollama pull mistral
