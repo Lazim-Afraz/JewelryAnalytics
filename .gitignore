@@ -6,3 +6,9 @@ __pycache__/
 *.log
 .env
 models/
+
+# Add these ↓↓↓
+exports/
+reports/
+*.pdf
+*.csv
