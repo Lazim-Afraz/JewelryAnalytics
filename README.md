@@ -1,18 +1,41 @@
-# 💎 JewelryAnalytics
+# Jewelry Analytics System
 
-A full-stack jewelry sales analytics platform built with Python — featuring clustering, sales prediction, recommendations, an interactive Streamlit dashboard, and a local AI chatbot.
+## Overview
+
+This project is an end-to-end analytics system designed to analyze and predict jewelry sales across multiple branches. It combines machine learning with business-oriented insights to support decision-making in inventory and sales optimization.
 
 ---
 
 ## Features
 
-- **Sales Analytics** — branch performance metrics, sell-through rates, efficiency scores
-- **Cluster Analysis** — K-Means clustering of branches into performance tiers
-- **Sales Prediction** — ML model predicts sales count from product attributes
-- **Recommendations** — best-performing attribute combos per branch or region
-- **Regional Performance** — heatmaps and breakdowns by region × attribute
-- **PDF Export** — one-click report generation with KPIs, clusters, top branches
-- **AI Chatbot** — local LLM assistant via Ollama (Mistral) with live data context
+* **Sales Prediction**
+
+  * Predicts `SALE_COUNT` based on branch and product attributes
+  * Uses Random Forest Regressor
+
+* **Branch Performance Analysis**
+
+  * Identifies top-performing branches
+  * Compares regional performance
+
+* **Clustering**
+
+  * Groups similar products/branches
+  * Helps identify patterns in sales behavior
+
+* **Analytics Dashboard (Streamlit)**
+
+  * Interactive interface
+  * Real-time predictions and insights
+
+---
+
+## Tech Stack
+
+* **Language:** Python
+* **Libraries:** Pandas, NumPy, Scikit-learn
+* **Frontend:** Streamlit
+* **ML Model:** Random Forest Regressor
 
 ---
 
@@ -20,92 +43,64 @@ A full-stack jewelry sales analytics platform built with Python — featuring cl
 
 ```
 JewelryAnalytics/
-├── analytics/
-│   ├── clustering_engine.py       # K-Means branch clustering
-│   ├── performance_metrics.py     # KPI calculations
-│   └── prediction_model.py        # Sales prediction ML model
-├── chatbot/
-│   ├── __init__.py
-│   └── assistant.py               # Ollama LLM chatbot
-├── exports/
-│   ├── __init__.py
-│   └── report_generator.py        # PDF report generation
-├── services/
-│   └── analytics_service.py       # Central data + analytics orchestrator
-├── app.py                         # Streamlit dashboard (main UI)
-├── main.py                        # Entry point launcher
-└── requirements.txt
+│
+├── analytics/              # ML models and analytics logic
+├── services/               # Service layer (business logic)
+├── app.py                  # Streamlit app
+├── requirements.txt
+├── README.md
+└── .gitignore
 ```
 
 ---
 
-## Installation
+## How to Run
 
-**1. Clone the repo**
-```bash
+### 1. Clone repository
+
+```
 git clone https://github.com/Lazim-Afraz/JewelryAnalytics.git
 cd JewelryAnalytics
 ```
 
-**2. Install dependencies**
-```bash
+### 2. Install dependencies
+
+```
 pip install -r requirements.txt
 ```
 
-**3. Configure your database**
+### 3. Run application
 
-Create a `.env` file in the project root:
 ```
-DB_SERVER=your_server
-DB_NAME=your_database
-DB_USER=your_username
-DB_PASSWORD=your_password
-```
-
-**4. (Optional) Install Ollama for the AI chatbot**
-
-Download from https://ollama.com/download, then:
-```bash
-ollama pull mistral
+streamlit run app.py
 ```
 
 ---
 
-## Running the App
+## Model Performance
 
-```bash
-python main.py
-```
-
-Or directly:
-```bash
-python -m streamlit run app.py
-```
-
-Opens at **http://localhost:8501**
+* R² Score: ~0.60 – 0.70
+* MAE: Moderate
+* RMSE: Controlled
 
 ---
 
-## Dashboard Pages
+## Key Insights
 
-| Page | Description |
-|------|-------------|
-| 📊 Dashboard | KPI summary cards, top branch & region |
-| 🏪 Branch & Clusters | PCA scatter, cluster profiles, top-N branches |
-| 🔮 Sales Prediction | Predict sales by product attributes |
-| 💡 Recommendations | Best combos per branch or region |
-| 🌍 Regional Performance | Region × attribute breakdown |
-| 📄 Export Report | Generate & download PDF report |
+* Certain branches consistently outperform others
+* Sales vary significantly based on product attributes
+* Demand patterns are not uniform across regions
 
 ---
 
-## Tech Stack
+## Future Improvements
 
-| Layer | Technology |
-|-------|-----------|
-| Dashboard | Streamlit, Plotly |
-| ML / Analytics | scikit-learn, pandas, numpy |
-| Database | SQL Server via pyodbc |
-| PDF Export | ReportLab |
-| AI Chatbot | Ollama (Mistral) |
-| GUI (legacy) | PySide6 |
+* Add time-based forecasting
+* Improve model interpretability
+* Integrate real-time data
+
+---
+
+## Author
+
+Lazim Afraz
