@@ -265,10 +265,17 @@ class AnalyticsService:
         if self._analyzer is None:
             return {"error": "Data not loaded."}
         try:
-            return self._analyzer.get_recommendations(
-                branch=branch, region=region, top_n=top_n,
-                predictor=self._predictor,
-            )
+            import inspect
+            sig = inspect.signature(self._analyzer.get_recommendations)
+            if "predictor" in sig.parameters:
+                return self._analyzer.get_recommendations(
+                    branch=branch, region=region, top_n=top_n,
+                    predictor=self._predictor,
+                )
+            else:
+                return self._analyzer.get_recommendations(
+                    branch=branch, region=region, top_n=top_n,
+                )
         except Exception as e:
             logger.error(f"get_recommendations() error: {e}", exc_info=True)
             return {"error": str(e)}
