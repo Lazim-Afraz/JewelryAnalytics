@@ -1,10 +1,12 @@
-# Jewelry Portfolio Analytics — Requirements
-# Install: pip install -r requirements.txt
+# Jewelry Portfolio Analytics — Streamlit Cloud requirements
+# pyodbc intentionally excluded (SQL Server not available on cloud)
 
 streamlit>=1.32.0
 pandas>=2.0.0
 numpy>=1.24.0
 scikit-learn>=1.3.0
 plotly>=5.18.0
-openpyxl>=3.1.0
 yfinance>=0.2.36
+joblib>=1.3.0
+openpyxl>=3.1.0
+reportlab>=4.0.0
