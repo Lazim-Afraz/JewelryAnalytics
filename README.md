@@ -1,41 +1,78 @@
-# Jewelry Analytics System
+# 💎 Jewelry Analytics Intelligence Platform
 
-## Overview
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://your-app-name.streamlit.app)
+![Python](https://img.shields.io/badge/Python-3.10+-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-This project is an end-to-end analytics system designed to analyze and predict jewelry sales across multiple branches. It combines machine learning with business-oriented insights to support decision-making in inventory and sales optimization.
+An end-to-end business analytics platform for jewelry retail — combining machine learning, interactive dashboards, and demand forecasting to drive data-informed inventory and sales decisions.
+
+> **Live demo →** [your-app-name.streamlit.app](https://your-app-name.streamlit.app)  
+> *(Replace this link after deploying to Streamlit Cloud)*
 
 ---
 
 ## Features
 
-* **Sales Prediction**
+- **Branch Performance Analytics** — efficiency ratios, revenue contribution, and local hero identification
+- **K-Means Clustering** — segment branches by sales behaviour and stock patterns
+- **Random Forest Forecasting** — predict revenue and surface top demand drivers
+- **Interactive Dashboards** — Plotly charts with filters, drill-downs, and export
+- **CSV Upload Mode** — plug in your own data instantly; no database setup needed
 
-  * Predicts `SALE_COUNT` based on branch and product attributes
-  * Uses Random Forest Regressor
+---
 
-* **Branch Performance Analysis**
+## Screenshots
 
-  * Identifies top-performing branches
-  * Compares regional performance
+> *(Add screenshots here — drag images into the GitHub editor)*
 
-* **Clustering**
+---
 
-  * Groups similar products/branches
-  * Helps identify patterns in sales behavior
+## Quick Start
 
-* **Analytics Dashboard (Streamlit)**
+```bash
+git clone https://github.com/Lazim-Afraz/JewelryAnalytics.git
+cd JewelryAnalytics
+pip install -r requirements.txt
+streamlit run app.py
+```
 
-  * Interactive interface
-  * Real-time predictions and insights
+Open [http://localhost:8501](http://localhost:8501) in your browser.
+
+---
+
+## CSV Format
+
+To use your own data, upload a CSV with these columns:
+
+| Column | Type | Description |
+|---|---|---|
+| `BRANCH` | string | Branch name or ID |
+| `ITEMTYPE` | string | e.g. Ring, Necklace, Bracelet |
+| `PURITY` | string | e.g. 18K, 22K, 24K |
+| `THEME` | string | e.g. Bridal, Classic, Modern |
+| `SALE_COUNT` | int | Units sold |
+| `STOCK_COUNT` | int | Units in stock |
+| `REVENUE` | float | Revenue for that row |
 
 ---
 
 ## Tech Stack
 
-* **Language:** Python
-* **Libraries:** Pandas, NumPy, Scikit-learn
-* **Frontend:** Streamlit
-* **ML Model:** Random Forest Regressor
+| Layer | Tools |
+|---|---|
+| Dashboard | Streamlit, Plotly |
+| ML | scikit-learn (Random Forest, K-Means) |
+| Data | pandas, numpy |
+| Deployment | Streamlit Community Cloud |
+
+---
+
+## Deploying to Streamlit Cloud (free)
+
+1. Fork or push this repo to your GitHub account
+2. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub
+3. Click **New app** → select this repo → set main file to `app.py`
+4. Click **Deploy** — live in ~2 minutes
 
 ---
 
@@ -43,64 +80,22 @@ This project is an end-to-end analytics system designed to analyze and predict j
 
 ```
 JewelryAnalytics/
-│
-├── analytics/              # ML models and analytics logic
-├── services/               # Service layer (business logic)
-├── app.py                  # Streamlit app
-├── requirements.txt
-├── README.md
-└── .gitignore
+├── app.py                  # Streamlit web app (main entry point)
+├── requirements.txt        # Python dependencies
+├── analytics/
+│   ├── performance_metrics.py
+│   └── clustering_engine.py
+├── data_layer/
+│   ├── sql_connector.py    # Optional: local SQL Server mode
+│   └── data_loader.py
+└── config/
+    └── database_config.py
 ```
-
----
-
-## How to Run
-
-### 1. Clone repository
-
-```
-git clone https://github.com/Lazim-Afraz/JewelryAnalytics.git
-cd JewelryAnalytics
-```
-
-### 2. Install dependencies
-
-```
-pip install -r requirements.txt
-```
-
-### 3. Run application
-
-```
-streamlit run app.py
-```
-
----
-
-## Model Performance
-
-* R² Score: ~0.60 – 0.70
-* MAE: Moderate
-* RMSE: Controlled
-
----
-
-## Key Insights
-
-* Certain branches consistently outperform others
-* Sales vary significantly based on product attributes
-* Demand patterns are not uniform across regions
-
----
-
-## Future Improvements
-
-* Add time-based forecasting
-* Improve model interpretability
-* Integrate real-time data
 
 ---
 
 ## Author
 
-Lazim Afraz
+**Lazim Afraz**  
+[linkedin.com/in/lazim-afraz-155878246](https://linkedin.com/in/lazim-afraz-155878246)  
+IEEE Access Publication · Indian Patent Filed (2026)
